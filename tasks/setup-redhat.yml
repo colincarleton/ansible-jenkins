@@ -1,0 +1,37 @@
+---
+- name: Add Jenkins Repo
+  yum_repository:
+    name: Jenkins
+    description: Jenkins Repository
+    baseurl: "{{ jenkins_repo_url }}"
+    gpgkey: "{{ jenkins_gpg_key }}"
+    gpgcheck: yes
+
+- name: Generate jenkins yum list
+  yum:
+    list: jenkins
+  register: yum_packages
+
+- name: Check if Jenkins is installed
+  debug: var=item
+  with_items: "{{ yum_packages | json_query(jsonquery) }}"
+  vars:
+    jsonquery: "results[?yumstate=='installed'].{name: name, version: version}"
+  register: yum_results
+
+- name: Set Jenkins Facts
+  set_fact:
+    jenkins_status: "{{ yum_results.results | map(attribute='item.version') | list | to_yaml }}"
+
+
+- name: Hello! {{ jenkins_status }} #| regex_replace('\[') | regex_replace('\]')
+  yum:
+    name: jenkins
+    state: present
+  when: jenkins_status == '[2.89.4]'
+
+- name: Install Latest Stable Release
+  yum:
+    name: jenkins
+    state: latest
+  when: jenkins_version == 'latest'

@@ -1,0 +1,12 @@
+---
+# Set vars
+- name: OS Specific Settings
+  include_vars: "{{ ansible_os_family }}.yml"
+
+- name: Redhat Setup
+  include_tasks: setup-redhat.yml
+  when: ansible_os_family == 'RedHat'
+
+- name: Debian Setup
+  include_tasks: setup-debian.yml
+  when: ansible_os_family == 'debian'

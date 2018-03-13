@@ -1,0 +1,8 @@
+---
+# Versioning Info
+# If set to latest, installs latest jenkins package from the stable branch. Can
+# also be set to a specific version if you don't want the latest. If jenkins is
+# present on the system, it will not upgrade unless the upgrade option is set
+# to yes.
+jenkins_version: latest
+jenkins_upgrade: no
